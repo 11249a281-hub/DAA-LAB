@@ -1,59 +1,84 @@
-#include<stdio.h>
-struct  Item{
-    int weight;
-    int profit;
-    float ratio;
-    int value;
+
+#include <stdio.h>
+
+// Structure to store item details
+struct Item {
+    int weight;     // weight of the item
+    int profit;     // profit of the item
+    float ratio;    // profit/weight ratio
 };
-void sort(struct Item items[],int n)
+
+// Function to sort items based on profit/weight ratio (Descending order)
+void sort(struct Item items[], int n)
 {
     struct Item temp;
-    for (int i = 0; i<n-1;i++)
+
+    // Bubble sort
+    for (int i = 0; i < n - 1; i++)
     {
-        for(int j=0;j<n-1;j++)
+        for (int j = 0; j < n - i - 1; j++)
         {
-           if(items[j].ratio<items[j+1].ratio)
+            // If current item's ratio is smaller than next, swap
+            if (items[j].ratio < items[j + 1].ratio)
             {
-                temp=items[j];
-                items[j]=items[j+1];
+                temp = items[j];
+                items[j] = items[j + 1];
+                items[j + 1] = temp;
             }
         }
-   
     }
-
-   
 }
-int main(){
+
+int main()
+{
     int n;
     float capacity;
-    printf("enter the number of items:");
+
+    // Ask user for number of items
+    printf("Enter the number of items: ");
     scanf("%d", &n);
-    struct Item itm[n] ;
-      for (int  i=0;i<n;i++){
-         printf("enter item %d weight  profit:",i+1);
-         scanf("%d %d",&itm[i].weight,&itm[i].profit);
-         itm[i].ratio=itm[i].profit/itm[i].weight;
-     }
-    printf("enter knapsack capacity:");
-    scanf("%f",&capacity);
-   
-   
-    sort(itm,n);
-    float totalProfit=0.0;
-    for(int i=0; i<n; i++)
+
+    // Create array of items
+    struct Item itm[n];
+
+    // Input weight and profit of each item
+    for (int i = 0; i < n; i++)
     {
-        if(capacity >=itm[i].weight)
+        printf("Enter item %d weight and profit: ", i + 1);
+        scanf("%d %d", &itm[i].weight, &itm[i].profit);
+
+        // Calculate profit/weight ratio
+        itm[i].ratio = (float)itm[i].profit / itm[i].weight;
+    }
+
+    // Input knapsack capacity
+    printf("Enter knapsack capacity: ");
+    scanf("%f", &capacity);
+
+    // Sort items based on ratio (highest first)
+    sort(itm, n);
+
+    float totalProfit = 0.0;
+
+    // Apply Fractional Knapsack logic
+    for (int i = 0; i < n; i++)
+    {
+        // If the whole item can be taken
+        if (capacity >= itm[i].weight)
         {
-            totalProfit += itm[i].value;
+            totalProfit += itm[i].profit;
             capacity -= itm[i].weight;
         }
         else
         {
-            totalProfit += itm[i].ratio*capacity;
+            // Take fractional part of the item
+            totalProfit += itm[i].ratio * capacity;
             break;
-           
         }
     }
-    printf("Maximum profit = %.2f\n",totalProfit);
+
+    // Print maximum profit
+    printf("Maximum profit = %.2f\n", totalProfit);
+
     return 0;
 }
